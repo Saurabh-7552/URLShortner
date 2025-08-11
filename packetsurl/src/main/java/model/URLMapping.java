@@ -7,11 +7,11 @@ import jakarta.persistence.*;
 public class URLMapping {
 
 	 @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
+	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+	  private Long id;
 	 
 	  @Column(nullable = false)
-	    private String originalUrl;
+	   private String originalUrl;
 
 	    @Column(nullable = false, unique = true)
 	    private String shortCode;

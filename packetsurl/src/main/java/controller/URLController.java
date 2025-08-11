@@ -1,8 +1,6 @@
 package controller;
 
 import java.net.URI;
-
-import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import service.UrlShortenerService;
-
+import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class URLController {
@@ -38,7 +36,7 @@ public class URLController {
 	     */
 	    @GetMapping("/{shortCode}")
 	    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
-	        java.util.Optional<String> originalUrl = service.getOriginalUrl(shortCode);
+	       Optional<String> originalUrl = service.getOriginalUrl(shortCode);
 	        if (originalUrl.isPresent()) {
 	            return ResponseEntity.status(302).location(URI.create(originalUrl.get())).build();
 	        } else {
