@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import model.URLMapping;
 import repository.UrlMappingRepository;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 @Service
 public class UrlShortenerService {
-	  private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	  //private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 	    @Autowired
 	    private UrlMappingRepository repository;
@@ -21,18 +24,32 @@ public class UrlShortenerService {
 	     */
 	    public String shortenUrl(String originalUrl) {
 	        // Step 1: Save entity with original URL (shortCode empty for now)
-	        URLMapping mapping = new URLMapping();
-	        mapping.setOriginalUrl(originalUrl);
-	        mapping = repository.save(mapping); // now it has a generated ID
+	    	  String shortCode = generateHash(originalUrl);
 
-	        // Step 2: Generate Base62 short code from ID
-	        String shortCode = encodeBase62(mapping.getId());
+	          // Save to DB
+	          URLMapping mapping = new URLMapping();
+	          mapping.setOriginalUrl(originalUrl);
+	          mapping.setShortCode(shortCode);
+	          repository.save(mapping);
 
-	        // Step 3: Update entity with short code
-	        mapping.setShortCode(shortCode);
-	        repository.save(mapping);
+	          return shortCode;
+	    }
+	    private String generateHash(String url) {
+	        try {
+	            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+	            byte[] hashBytes = digest.digest(url.getBytes());
 
-	        return shortCode;
+	            // URL-safe Base64 encode (no '+' or '/')
+	            String base64Hash = Base64.getUrlEncoder()
+	                                      .withoutPadding()
+	                                      .encodeToString(hashBytes);
+
+	            // Take first 8 characters for shortness
+	            return base64Hash.substring(0, 8);
+
+	        } catch (NoSuchAlgorithmException e) {
+	            throw new RuntimeException("Error generating hash", e);
+	        }
 	    }
 
 	    /**
@@ -46,7 +63,7 @@ public class UrlShortenerService {
 	    /**
 	     * Encode a number to Base62 string.
 	     */
-	    private String encodeBase62(long value) {
+	   /* private String encodeBase62(long value) {
 	        if (value == 0) {
 	            return "0";
 	        }
@@ -57,5 +74,5 @@ public class UrlShortenerService {
 	            value /= 62;
 	        }
 	        return sb.reverse().toString();
-	    }
+	    }*/
 }

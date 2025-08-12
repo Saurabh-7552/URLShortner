@@ -13,7 +13,7 @@ public class URLMapping {
 	  @Column(nullable = false)
 	   private String originalUrl;
 
-	    @Column(nullable = false, unique = true)
+	    @Column(nullable = true, unique = true)
 	    private String shortCode;
 	    
 	    
