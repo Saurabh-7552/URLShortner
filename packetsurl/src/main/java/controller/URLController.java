@@ -7,7 +7,6 @@ import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,11 +38,7 @@ public class URLController {
 	    @GetMapping("/{shortCode}")
 	    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
 	       Optional<String> originalUrl = service.getOriginalUrl(shortCode);
-	        if (originalUrl.isPresent()) {
-	            return ResponseEntity.status(302).location(URI.create(originalUrl.get())).build();
-	        } else {
-	            return ResponseEntity.notFound().build();
-	        }
+            return originalUrl.<ResponseEntity<Void>>map(s -> ResponseEntity.status(302).location(URI.create(s)).build()).orElseGet(() -> ResponseEntity.notFound().build());
 	    }
 	
 }

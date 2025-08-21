@@ -2,81 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form id="shorten-form">
+            <input 
+                type="url" 
+                id="long-url" 
+                placeholder="Enter long URL" 
+                required>
+            <button type="submit" id="shorten-btn">Shorten</button>
+        </form>
+<div></div>
+        <div id="result" class="hidden">
+            <p>Short URL:</p>
+            <a href="#" target="_blank" id="short-url"></a>
+            <button id="copy-btn">Copy</button>
+        </div>
 
-    <h1>URL Shortener</h1>
+        <div id="error" class="hidden"></div>
+    </div>
 
-    <h3>Shorten a URL</h3>
-    <input type="text" id="longUrl" placeholder="Enter long URL">
-    <button onclick="shortenUrl()">Shorten</button>
-    <div id="shortResult" class="result" style="display:none;"></div>
-
-    <h3>Get Original URL</h3>
-    <input type="text" id="shortCode" placeholder="Enter short code (e.g., KVXfc3JR)">
-    <button onclick="getOriginalUrl()">Get Original URL</button>
-    <div id="originalResult" class="result" style="display:none;"></div>
-
-    <script>
-        const API_BASE = "http://localhost:8081/api";
-
-        async function shortenUrl() {
-            const url = document.getElementById("longUrl").value.trim();
-            if (!url) return alert("Please enter a URL");
-
-            const response = await fetch(`${API_BASE}/shorten?url=${encodeURIComponent(url)}`, {
-                method: "POST"
-            });
-
-            if (response.ok) {
-                const tinyUrl = await response.text();
-                document.getElementById("shortResult").style.display = "block";
-                document.getElementById("shortResult").innerHTML = 
-                    `Short URL: <a href="${tinyUrl}" target="_blank">${tinyUrl}</a>`;
-            } else {
-                alert("Error shortening URL");
-            }
-        }
-
-        async function getOriginalUrl() {
-            const shortCode = document.getElementById("shortCode").value.trim();
-            if (!shortCode) return alert("Please enter a short code");
-
-            const response = await fetch(`${API_BASE}/tinyurl/${shortCode}`, {
-                method: "GET",
-                redirect: "manual"
-            });
-
-            if (response.status === 302) {
-                const original = response.headers.get("Location");
-                document.getElementById("originalResult").style.display = "block";
-                document.getElementById("originalResult").innerHTML =
-                    `Original URL: <a href="${original}" target="_blank">${original}</a>`;
-            } else {
-                alert("Short code not found");
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

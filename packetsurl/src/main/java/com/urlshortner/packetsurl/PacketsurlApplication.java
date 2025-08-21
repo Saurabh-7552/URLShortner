@@ -9,12 +9,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.urlshortner.packetsurl", "controller", "service", "model", "repository"})
 @EntityScan(basePackages = {"com.urlshortner.packetsurl", "model"})
-@EnableJpaRepositories(basePackages = {"com.urlshortner.packetsurl", "Repository"})
+@EnableJpaRepositories(basePackages = {"com.urlshortner.packetsurl", "repository"})
 public class PacketsurlApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PacketsurlApplication.class, args);
 		System.out.print("hello world");
+
 	}
 
 }
